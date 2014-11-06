@@ -1,0 +1,26 @@
+\documentclass[12pt]{article}
+\usepackage{palatino,url}
+\usepackage{pgfgantt}
+\begin{document}
+\section*{My first document}
+
+\begingroup
+\obeylines
+\input{myfilename.txt}%
+\endgroup%
+
+This is a test of reading from latex.
+I don't think I wanna write anything to a text doc.
+Because I'll output it to a C++ file and have this read from that.\\
+
+\newread\file
+\openin\file=myfilename.txt
+\loop\unless\ifeof\file
+    \read\file to\fileline % Reads a line of the file into \fileline
+
+\fileline
+
+\repeat
+\closein\file
+
+\end{document}
