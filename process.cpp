@@ -92,7 +92,7 @@ int Process::getStartTime()
 
 int Process::getStopTime()
 {
-    return waitTime;
+    return stopTime;
 }
 
 void Process::setName(std::string newName)

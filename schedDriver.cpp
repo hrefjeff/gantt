@@ -35,7 +35,7 @@ int main()
 	RoundRobin rr;
 
 	// ----------- Set Time Slice of Round Robin---------------
-	rr.setTimeSlice(9);
+	rr.setTimeSlice(3);
 	// --------------------------------------------------------
 
 	AbstractSchedStrat * stratagyArray[NUM_OF_STRATS] = {&fcfs, &rr};
@@ -252,13 +252,18 @@ void readFile(string filename, Process * arr, int dataSize) {
 void makeCharts(AbstractSchedStrat * stratArr[])
 {
 
+	cout << endl;
 	vector<Process *> statisticColumn;
 
 	// *****implement when I get another strategy*********
 	for (int i = 0; i < NUM_OF_STRATS; i++)
 	{
-		cout << "~~~~~~~~~~~~~~~~~~~~~~~STRATEGY " << i << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
-		stratArr[i]->printWaitQueue();
+		cout << "----~~~~~~~~~~~~~~~~~~~~~~~";
+		if (i == 0)
+			cout << "FIRST COME FIRST SERVE";
+		else if (i == 1)
+			cout << "ROUND ROBIN";
+		cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
 		stratArr[i]->makeGantt();
 		stratArr[i]->makeColumnWait();
 

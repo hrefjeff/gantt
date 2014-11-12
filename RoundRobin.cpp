@@ -27,8 +27,12 @@ void RoundRobin::makeGantt()
 		// If the item in the waiting queue has more burst time after processing
 		else if (pBurstTime > timeSlice)
 		{
+			// assuming all processes end
 			if (waitingQueue.front()->getStartTime() < 0)
+			{
 				waitingQueue.front()->setStartTime(waitTime);
+				waitingQueue.front()->setStopTime(0);
+			}
 			
 			Process * temp = new Process(waitingQueue.front());
 			temp->setWaitTime(waitTime);
@@ -68,11 +72,8 @@ void RoundRobin::makeColumnTurnAround()
 
 	for (int i=0; i<gantt.size(); i++)
 	{
-		if ((gantt[i]->getStartTime() >= 0) && (gantt[i]->getStopTime() > 0)) 
+		if ((gantt[i]->getStopTime() > 0)) 
 		{
-			cout << "in here" << endl;
-			cout << gantt[i]->getStopTime() << endl;
-			cout << gantt[i]->getStartTime() << endl;
 			tt = gantt[i]->getStopTime() - gantt[i]->getStartTime();
 			gantt[i]->setTurnAroundTime(tt);
 			chartTurnAround.push_back(gantt[i]);
@@ -91,9 +92,8 @@ void RoundRobin::makeColumnWait()
 	{
 		// If process was the last process entered,
 		// Get burst time of process and add it to wait time
-		if (gantt[i]->getStopTime() > 0) 
+		if (gantt[i]->getStopTime() > 0)
 		{
-			cout << "wait process " << gantt[i]->getName() << ", with time " << gantt[i]->getWaitTime() << endl;
 			chartWait.push_back(gantt[i]);
 		}
 	}
