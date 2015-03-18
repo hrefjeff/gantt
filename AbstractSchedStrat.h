@@ -3,6 +3,8 @@
 
 #include "process.h"
 #include "FirstComeFirstServe.h"
+#include "HighestPriorityFirst.h"
+#include "ShortestProcessFirst.h"
 #include "RoundRobin.h"
 
 #ifndef ABSTRACTSCHEDSTRAT_H
@@ -39,9 +41,10 @@ class AbstractSchedStrat {
 		vector<Process *> getColumnWait();
 
 		virtual void makeGantt() = 0;
-		virtual void makeColumnTurnAround() {}
-		virtual void makeColumnWait() {}
+		virtual void makeColumnTurnAround();
+		virtual void makeColumnWait();
 		double calculateWaitAvg();
+		double calculateTurnAroundAvg();
 };
 
 #endif

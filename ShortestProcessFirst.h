@@ -1,9 +1,14 @@
-#include <iostream>
+#ifndef SHORTESTPROCESSFIRST_H
+#define SHORTESTPROCESSFIRST_H
 
-class ShortestProcessFirst : public SchedulingStrategy {
+#include "AbstractSchedStrat.h"
+
+class ShortestProcessFirst : public AbstractSchedStrat {
 	
 	public:
 
-		void processor();
+		void makeGantt();
 
 };
+
+#endif

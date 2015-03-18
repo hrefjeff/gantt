@@ -17,7 +17,6 @@ class Process {
 	private:
 
 		std::string name;
-		int number;
 		int priority;
 		int burstTime;
 
@@ -28,15 +27,16 @@ class Process {
 		int startTime;
 		int stopTime;
 
+		bool inList;
+
 	public:
 
 		Process();
-		Process(std::string, int, int, int);
+		Process(std::string, int, int);
 		Process(Process *);
 		~Process();
 
 		std::string getName();
-		int getNumber();
 		int getPriority();
 		int getBurstTime();
 		
@@ -45,9 +45,9 @@ class Process {
 		
 		int getStartTime();
 		int getStopTime();
+		bool getInListFlag();
 
 		void setName(std::string);
-		void setNumber(int);
 		void setPriority(int);
 		void setBurstTime(int);
 		
@@ -56,6 +56,7 @@ class Process {
 
 		void setStartTime(int);
 		void setStopTime(int);
+		void setInListFlag(bool);
 };
 
 #endif

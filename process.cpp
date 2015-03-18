@@ -12,57 +12,52 @@ using namespace std;
 Process::Process()
 {
     name = "";
-    number = 0;
     burstTime = 0;
     priority = 0;
     waitTime = 0;
     turnAroundTime = 0;
+    inList = true;
 }
 
-Process::Process(std::string newName, int pNum, int bTime, int plvl)
+Process::Process(std::string newName, int bTime, int plvl)
 {
     name = newName;
-    number = pNum;
     burstTime = bTime;
     priority = plvl;
     waitTime = 0;
     turnAroundTime = 0;
     startTime = 0;
     stopTime = 0;
+    inList = true;
 }
 
 Process::Process(Process * someProcess)
 {
     name = someProcess->name;
-    number = someProcess->number;
     burstTime = someProcess->burstTime;
     priority = someProcess->priority;
     waitTime = someProcess->waitTime;
     turnAroundTime = someProcess->turnAroundTime;
     startTime = someProcess->startTime;
     stopTime = someProcess->stopTime;
+    inList = someProcess->inList;
 }
 
 Process::~Process()
 {
     name = "";
-    number = 0;
     burstTime = 0;
     priority = 0;
     waitTime = 0;
     turnAroundTime = 0;
     startTime = 0;
     stopTime = 0;
+    inList = false;
 }
 
 std::string Process::getName()
 {
     return name;
-}
-
-int Process::getNumber()
-{
-    return number;
 }
 
 int Process::getPriority()
@@ -95,14 +90,14 @@ int Process::getStopTime()
     return stopTime;
 }
 
+bool Process::getInListFlag()
+{
+    return inList;
+}
+
 void Process::setName(std::string newName)
 {
     name = newName;
-}
-
-void Process::setNumber(int newNumber)
-{
-    number = newNumber;
 }
 
 void Process::setPriority(int newPriority)
@@ -133,4 +128,9 @@ void Process::setStopTime(int stop)
 void Process::setStartTime(int start)
 {
     startTime = start;
+}
+
+void Process::setInListFlag(bool flag)
+{
+    inList = flag;
 }

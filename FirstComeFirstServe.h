@@ -8,8 +8,6 @@ class FirstComeFirstServe: public AbstractSchedStrat {
 	public:
 
 		void makeGantt();
-		void makeColumnTurnAround();
-		void makeColumnWait();
 };
 
 #endif

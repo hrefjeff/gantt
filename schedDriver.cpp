@@ -1,3 +1,10 @@
+/*
+Compile command on ubuntu:
+
+g++ -std=c++0x -I. schedDriver.cpp AbstractSchedStrat.cpp FirstComeFirstServe.cpp RoundRobin.cpp HighestPriorityFirst.cpp ShortestProcessFirst.cpp process.cpp -o sched
+
+*/
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -11,7 +18,7 @@
 
 using namespace std;
 
-#define NUM_OF_STRATS 2
+#define NUM_OF_STRATS 4
 
 void printMenu();
 int getInputMethod();
@@ -32,13 +39,15 @@ int main()
 	int choice = 0;
 		
 	FirstComeFirstServe fcfs;
+	HighestPriority hp;
+	ShortestProcessFirst spf;
 	RoundRobin rr;
 
 	// ----------- Set Time Slice of Round Robin---------------
-	rr.setTimeSlice(3);
+	rr.setTimeSlice(50);
 	// --------------------------------------------------------
 
-	AbstractSchedStrat * stratagyArray[NUM_OF_STRATS] = {&fcfs, &rr};
+	AbstractSchedStrat * stratagyArray[NUM_OF_STRATS] = {&fcfs, &hp, &spf, &rr};
 
 	printMenu();
 	choice = getInputMethod();
@@ -183,9 +192,6 @@ void loadDataFromFile(AbstractSchedStrat * stratArr[])
 			stratArr[i]->addProcess(&tmpArray[j]);
 		}
 	}
-
-	// for (int i = 0; i<numOfLinesToRead; i = i + 4)
-	// 	cout << tmpArray[i] << " " << tmpArray[i+1] << " " << tmpArray[i+2] << " " << tmpArray[i+3] << endl;
 }
 
 void loadDataFromUser(AbstractSchedStrat * stratArr[])
@@ -202,13 +208,13 @@ void loadDataFromUser(AbstractSchedStrat * stratArr[])
 
 	do 
 	{
-		cout << "Process " << pNumber << " name: "; cin >> name;
+		cout << "P" << pNumber << " name: "; cin >> name;
 		bTime = getInfo("burst time",pNumber);
 		pLevel = getInfo("priority",pNumber);
 
 		// implement when I get another strategy
 		for (int i = 0; i < NUM_OF_STRATS; i++)
-			stratArr[i]->addProcess(new Process(name,pNumber,bTime,pLevel));
+			stratArr[i]->addProcess(new Process(name,bTime,pLevel));
 		
 		cout << "Enter another process? (y or n): "; cin >> pChoice;
 
@@ -227,7 +233,6 @@ void readFile(string filename, Process * arr, int dataSize) {
 	inFile.open(filename.c_str());
 
 	string rName;
-	int rNumber;
 	int rBurstTime;
 	int rPriority;
 
@@ -236,11 +241,10 @@ void readFile(string filename, Process * arr, int dataSize) {
 		while ((!inFile.eof()) && (i < dataSize))
 		{
 			inFile >> rName;
-			inFile >> rNumber;
 			inFile >> rBurstTime;
 			inFile >> rPriority;
 
-			arr[i] = new Process(rName, rNumber, rBurstTime, rPriority);
+			arr[i] = new Process(rName, rBurstTime, rPriority);
 
 			i++;
 		}
@@ -253,32 +257,45 @@ void makeCharts(AbstractSchedStrat * stratArr[])
 {
 
 	cout << endl;
+	
 	vector<Process *> statisticColumn;
 
 	// *****implement when I get another strategy*********
 	for (int i = 0; i < NUM_OF_STRATS; i++)
 	{
-		cout << "----~~~~~~~~~~~~~~~~~~~~~~~";
+		cout << endl;
+		cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~";
 		if (i == 0)
 			cout << "FIRST COME FIRST SERVE";
 		else if (i == 1)
-			cout << "ROUND ROBIN";
-		cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+			cout << "HIGHEST PRIORITY FIRST";
+		else if (i == 2)
+			cout << "SHORTEST PROCESS FIRST";
+		else if (i == 3)
+			cout << "ROUND ROBIN";		
+		cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << endl;
+		cout << endl;
 		stratArr[i]->makeGantt();
 		stratArr[i]->makeColumnWait();
 
 		// ~~~~~~~~~~~~~~~~~~~~~~Write charts out~~~~~~~~~~~~~~~~~~~~~~~~
 
 		statisticColumn = stratArr[i]->getColumnWait();
+
 		for (int k = 0; k < statisticColumn.size(); k++)
 		{
-			cout << "Process " << k << ", " << statisticColumn[k]->getName() << ", has wait time of " << statisticColumn[k]->getWaitTime() << "\t : ";
+			cout << statisticColumn[k]->getName() << " wait time  :  " << statisticColumn[k]->getWaitTime() << "\t : ";
 		 	for (int m = 0; m < statisticColumn[k]->getWaitTime(); m++)
 		 	{
 		 		cout << "|";
 		 	}
 			cout << endl;
 		}
+
+		cout << endl;
+
+		cout << "Average wait time for a process: " << stratArr[i]->calculateWaitAvg() << endl;
+
 		statisticColumn.clear();
 
 		stratArr[i]->makeColumnTurnAround();
@@ -289,7 +306,7 @@ void makeCharts(AbstractSchedStrat * stratArr[])
 
 		for (int k = 0; k < statisticColumn.size(); k++)
 		{
-			cout << "Process " << k << ", " << statisticColumn[k]->getName() << ", has turn around time of " << statisticColumn[k]->getTurnAroundTime() << "\t : ";
+			cout << statisticColumn[k]->getName() << " turn around time  :  " << statisticColumn[k]->getTurnAroundTime() << "\t : ";
 		 	for (int m = 0; m < statisticColumn[k]->getTurnAroundTime(); m++)
 		 	{
 		 		cout << "|";
@@ -298,6 +315,14 @@ void makeCharts(AbstractSchedStrat * stratArr[])
 		}
 
 		cout << endl;
+		
+		cout << "Average turnaround time for a process: " << stratArr[i]->calculateTurnAroundAvg() << endl;
+
 		statisticColumn.clear();
 	}
+}
+
+void ClearScreen()
+{
+	cout << string( 100, '\n' );
 }

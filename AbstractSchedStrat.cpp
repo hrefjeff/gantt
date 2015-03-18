@@ -103,7 +103,7 @@ vector<Process *> AbstractSchedStrat::getColumnWait()
 double AbstractSchedStrat::calculateWaitAvg()
 {
 	double avg = 0.0;
-	int total = 0.0;
+	double total = 0.0;
 
 	for (int i=0; i<chartWait.size(); i++)
 	{
@@ -113,4 +113,66 @@ double AbstractSchedStrat::calculateWaitAvg()
 	avg = total / chartWait.size();
 
 	return avg;
+}
+
+double AbstractSchedStrat::calculateTurnAroundAvg()
+{
+	double avg = 0.0;
+	double total = 0.0;
+
+	for (int i=0; i<chartTurnAround.size(); i++)
+	{
+		total += chartTurnAround[i]->getTurnAroundTime();
+	}
+
+	avg = total / chartTurnAround.size();
+
+	return avg;
+}
+
+void AbstractSchedStrat::makeColumnTurnAround()
+{
+	chartTurnAround.clear();
+	
+	//Time
+	int t = 0;
+	int waitTime = 0;
+
+	for (int i=0; i<gantt.size(); i++)
+	{
+		t = gantt[i]->getBurstTime();
+		gantt[i]->setTurnAroundTime(t);
+		waitTime += waitTime;
+		gantt[i]->setWaitTime(waitTime);
+	}
+
+	for (int j=0; j<gantt.size(); j++)
+	{
+		chartTurnAround.push_back(gantt[j]);
+	}
+}
+
+void AbstractSchedStrat::makeColumnWait()
+{
+
+	chartWait.clear();
+	
+	//Time
+	int t=0;
+
+	// First process always has a wait time of 0.
+	gantt[0]->setWaitTime(t);
+	
+	for (int i=0; i<gantt.size()-1; i++)
+	{	
+		// Get burst time of process and add it to wait time
+		t += gantt[i]->getBurstTime();
+		// Set the next process
+		gantt[i+1]->setWaitTime(t);
+	}
+
+	for (int j=0; j<gantt.size(); j++)
+	{
+		chartWait.push_back(gantt[j]);
+	}
 }

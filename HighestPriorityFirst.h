@@ -1,9 +1,14 @@
-#include <iostream>
+#ifndef HIGHESTPRIORITY_H
+#define HIGHESTPRIORITY_H
 
-class HighestPriorityFirst : public SchedulingStrategy {
-	
+#include "AbstractSchedStrat.h"
+
+class HighestPriority: public AbstractSchedStrat {
+
+
 	public:
 
-		void processor();
-
+		void makeGantt();
 };
+
+#endif
